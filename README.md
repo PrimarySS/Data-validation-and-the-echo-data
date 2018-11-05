@@ -40,3 +40,7 @@ pojo数据传入controller方法后，springmvc自动将pojo数据放到request�
 在商品查询列表页面，通过商品类型查询商品信息。
 在controller中定义商品类型查询方法，最终将商品类型传到页面。
 
+3.使用最简单方法使用model，可以不用@ModelAttribute。
+
+具体的解释过程课参考博主的csdn博客相关文章https://blog.csdn.net/qq_38931949/article/details/83746723
+
