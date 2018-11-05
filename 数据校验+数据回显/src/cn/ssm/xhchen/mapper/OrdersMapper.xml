@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.ssm.xhchen.mapper.OrdersMapper">
+
+	<!-- 添加数据 -->
+	<insert id="insertOrders" parameterType="cn.ssm.xhchen.po.Orders">
+		<!-- id自动增长 -->
+		<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+			SELECT
+			LAST_INSERT_ID()
+		</selectKey>
+
+		<!-- 插入sql语句 -->
+		insert into orders(user_id,number,note) values(#{user_id},#{number},#{note})
+	</insert>
+
+	<!-- 修改数据 -->
+	<update id="updateOrders" parameterType="cn.ssm.xhchen.po.Orders">
+		<!-- 插入修改sql语句 -->
+		update orders set user_id=#{user_id}, number=#{number}, note=#{note} where id=#{id}
+	</update>
+
+	<!-- 删除数据 -->
+	<delete id="deleteOrders" parameterType="cn.ssm.xhchen.po.Orders">
+		<!-- 插入删除语句 -->
+		delete from orders where id=#{id}
+	</delete>
+
+	<!-- 通过id查询 -->
+	<select id="findOrdersById" parameterType="java.lang.Integer" resultType="cn.ssm.xhchen.po.Orders">
+		<!-- 插入查询语句 -->
+		select * from orders where id=#{id}
+	</select>
+	
+</mapper>

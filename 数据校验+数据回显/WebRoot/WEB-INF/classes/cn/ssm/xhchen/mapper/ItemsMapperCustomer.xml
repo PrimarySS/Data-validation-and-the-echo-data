@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- ItemsMapper的拓展mapper -->
+<mapper namespace="cn.ssm.xhchen.mapper.ItemsMapperCustomer">
+
+	<!-- sql片段 -->
+	<sql id="where_query_Items">
+		<!-- 使用动态sql，满足条件进行sql拼接 -->
+		<!-- 商品信息通过 ItemsQueryVo包装类中的ItemsCustomer传递 -->
+		<if test="itemsCustomer != null">
+			<if test="itemsCustomer.items_name != null and itemsCustomer.items_name != ''">
+				items_name like '%${itemsCustomer.items_name}%';
+			</if>
+		</if>
+	</sql>
+	
+	
+	<!-- 商品列表查询 
+		parameterType:商品信息包装类 
+		resultType:商品信息po拓展类 
+		-->
+	<select id="findItemsList" parameterType="cn.ssm.xhchen.po.ItemsQueryVo" resultType="cn.ssm.xhchen.po.ItemsCustomer">
+		select * from items
+		<where>
+			<include refid="where_query_Items"></include>
+		</where>
+	</select>
+	
+	
+	<!-- 提交批量修改商品信息
+		collection: 传入单参数的参数类型
+		index: 每次迭代到的位置
+		item: 每一个元素进行迭代时的别名
+		open: 以什么开始
+		separator: 每次进行迭代之间以什么符号作为分隔 符
+		close: 以什么结束
+	 -->
+	<update id="updateAllItemsSubmit" parameterType="java.util.List">
+		update items set status = 
+			<foreach collection="list" index="index" item="itemsList" open="case id" separator=" " close="end">
+				when #{itemsList.id} then #{itemsList.status}
+			</foreach>
+		where id in
+			<foreach collection="list" index="index" item="itemsList" open="(" separator="," close=")">
+				#{itemsList.id}
+			</foreach>
+	</update>
+	
+	<!-- 
+	==>  Preparing: 
+	update items set status = 
+		case id 
+			when ? then ? 
+			when ? then ? 
+			when ? then ? 
+			when ? then ? 
+		end 
+			where id in ( ? , ? , ? , ? ) 
+	 -->
+	
+	
+	<!-- 批量删除数组商品信息 
+		collection: 传入单参数的参数类型
+		index: 每次迭代到的位置
+		item: 每一个元素进行迭代时的别名
+		open: 以什么开始
+		separator: 每次进行迭代之间以什么符号作为分隔 符
+		close: 以什么结束
+	-->
+	<delete id="deleteItemsArrayAllIn" parameterType="java.util.List">
+		delete from items where id in
+		<foreach collection="list" index="index" item="items_id" open="(" separator="," close=")">
+			#{items_id}
+		</foreach>
+	</delete>
+
+</mapper>

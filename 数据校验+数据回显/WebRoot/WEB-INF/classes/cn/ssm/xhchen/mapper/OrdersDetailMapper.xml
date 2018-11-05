@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.ssm.xhchen.mapper.OrdersDetailMapper">
+
+	<!-- 添加数据 -->
+	<insert id="insertOrdersDetail" parameterType="cn.ssm.xhchen.po.OrdersDetail">
+		<!-- id自动增长 -->
+		<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+			SELECT
+			LAST_INSERT_ID()
+		</selectKey>
+
+		<!-- 插入sql语句 -->
+		insert into ordersDetail(items_id,items_num,orders_id) values(#{items_id},#{items_num},#{orders_id})
+	</insert>
+
+	<!-- 修改数据 -->
+	<update id="updateOrdersDetail" parameterType="cn.ssm.xhchen.po.OrdersDetail">
+		<!-- 插入修改sql语句 -->
+		update ordersDetail set items_id=#{items_id}, items_num=#{items_num}, orders_id=#{orders_id} where id=#{id}
+	</update>
+
+	<!-- 删除数据 -->
+	<delete id="deleteOrdersDetail" parameterType="cn.ssm.xhchen.po.OrdersDetail">
+		<!-- 插入删除语句 -->
+		delete from ordersDetail where id=#{id}
+	</delete>
+
+	<!-- 通过id查询 -->
+	<select id="findOrdersDetailById" parameterType="java.lang.Integer" resultType="cn.ssm.xhchen.po.OrdersDetail">
+		<!-- 插入查询语句 -->
+		select * from ordersDetail where id=#{id}
+	</select>
+	
+</mapper>

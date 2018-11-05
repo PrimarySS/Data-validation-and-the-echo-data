@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd 
+	http://www.springframework.org/schema/mvc 
+	http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+	http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/aop 
+	http://www.springframework.org/schema/aop/spring-aop-4.0.xsd 
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+	http://www.springframework.org/schema/util 
+	http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+
+
+	<!-- 配置Handler -->
+	<!-- 扫描解决开发中多个Handler的配置 扫描cotroller,指定cotroller的包 -->
+	<context:component-scan base-package="cn.ssm.xhchen.controller"></context:component-scan>
+
+	<!-- 注解配置处理器映射器 -->
+	<!-- <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"></bean> -->
+
+	<!-- 注解配置处理器适配器 -->
+	<!-- <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"></bean> -->
+
+	<!-- 自动注册DefaultAnnotationHandlerMapping与AnnotationMethodHandlerAdapte两个bean, 
+		是spring MVC为@Controllers分发请求所必须的 -->
+	<mvc:annotation-driven conversion-service="conversionService" validator="validator" />
+
+	<!-- 自定义参数绑定 -->
+	<bean id="conversionService"
+		class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+		<!-- 转换器 -->
+		<property name="converters">
+			<list>
+				<!-- 日期类型转换 -->
+				<bean class="cn.ssm.xhchen.controller.converter.CustomerDateConverter" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- 配置视图解析器 默认jstl标签 -->
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<!-- 配置访问jsp路径的前缀 -->
+		<property name="prefix" value="/WEB-INF/jsp/"></property>
+		<!-- 配置访问jsp路径的后缀 -->
+		<property name="suffix" value=".jsp"></property>
+	</bean>
+	
+	<!-- 校验器 -->
+	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+		<!-- hibernate校验器 -->
+		<property name="providerClass" value="org.hibernate.validator.HibernateValidator"></property>
+		<!-- 指定校验使用的资源文件，在文件中配置校验错误信息,如不指定，则默认classpath下的validationMessage.properties文件 -->
+		<property name="validationMessageSource" ref="messageSource"></property>
+	</bean>
+	
+	<!-- 校验错误信息配置文件 -->
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<!-- 资源文件名 -->
+		<property name="basenames">
+			<list>
+				<!-- 配置错误信息文件 CustomValidationMessages.properties-->
+				<value>classpath:CustomValidationMessages</value>
+			</list>
+		</property>
+		<!-- 解决中文乱码 -->
+		<property name="defaultEncoding" value="utf-8"></property>		
+		<!-- 资源文件编码格式 -->
+		<property name="fileEncodings" value="utf-8"></property>
+		<!-- 资源文件缓存时间 -->
+		<property name="cacheSeconds" value="120"></property>
+	</bean>
+	
+</beans>
